@@ -6,14 +6,27 @@
 trigger:
 - master
 
-pool:
-  vmImage: ubuntu-latest
+resources:
+- repo: self
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  tag: '$(Build.BuildId)'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+
+
+stages:
+  - stage: Build
+    displayName: Build image 
+    jobs:
+      - job: Build
+        displayName: build
+        pool: 'ubuntu-latest'
+        steps:
+          
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'dockertushar'
+            repository: 'tusharwale/ramram'
+            command: 'buildAndPush'
+            Dockerfile: '**/Dockerfile'
+            tags: '$(tag)'
